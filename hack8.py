@@ -8,7 +8,8 @@ from langchain_huggingface import HuggingFaceEmbeddings, HuggingFacePipeline
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 
 # Set up the model
-model_name = "gpt2-xl"
+# model_name = "gpt2-xl"
+model_name = "gpt2"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(model_name)
 
