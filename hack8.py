@@ -79,9 +79,9 @@ def generate_answer(qa_chain, question):
 
 
 def main():
-    st.title("Enhanced Banking Assistant")
+    st.title("InfoBank Advisor")
 
-    st.header("Upload Document")
+    st.header("Upload Bank Related Document")
     uploaded_file = st.file_uploader("Choose a PDF or Word document", type=["pdf", "docx", "doc"])
     if uploaded_file is not None:
         if st.button("Process Document"):
