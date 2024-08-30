@@ -14,7 +14,7 @@ tokenizer = AutoTokenizer.from_pretrained(model_name, clean_up_tokenization_spac
 model = AutoModelForCausalLM.from_pretrained(model_name)
 
 # Create a text-generation pipeline with adjusted parameters
-pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, max_new_tokens=150, 
+pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, max_new_tokens=150,
                 num_return_sequences=1, top_k=50, top_p=0.95, temperature=0.7,
                 truncation=True, pad_token_id=tokenizer.eos_token_id)
 
@@ -24,10 +24,11 @@ llm = HuggingFacePipeline(pipeline=pipe)
 # Initialize embeddings
 embeddings = HuggingFaceEmbeddings()
 
+
 def process_document(file):
     file_extension = os.path.splitext(file.name)[1].lower()
     temp_file_path = f"temp{file_extension}"
-    
+
     with open(temp_file_path, "wb") as f:
         f.write(file.getbuffer())
 
@@ -50,6 +51,7 @@ def process_document(file):
     os.remove(temp_file_path)
     return f"{file_extension[1:].upper()} processed and embeddings saved successfully!"
 
+
 def get_qa_chain():
     loaded_vectors = FAISS.load_local("vectors", embeddings, allow_dangerous_deserialization=True)
     qa_chain = RetrievalQA.from_chain_type(
@@ -60,11 +62,13 @@ def get_qa_chain():
     )
     return qa_chain
 
+
 def generate_answer(qa_chain, question):
     result = qa_chain({"query": question})
     answer = result['result']
     source_docs = result['source_documents']
     return answer, source_docs
+
 
 def main():
     st.title("Enhanced Banking Assistant")
@@ -99,13 +103,14 @@ def main():
                 answer, source_docs = generate_answer(qa_chain, prompt)
                 full_response = f"{answer}\n\nSources:\n"
                 for i, doc in enumerate(source_docs):
-                    full_response += f"{i+1}. {doc.page_content[:100]}...\n"
+                    full_response += f"{i + 1}. {doc.page_content[:100]}...\n"
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
                 full_response = "I apologize, but I encountered an error while processing your question. Please try again or rephrase your question."
 
             message_placeholder.markdown(full_response)
         st.session_state.messages.append({"role": "assistant", "content": full_response})
+
 
 if __name__ == "__main__":
     main()
